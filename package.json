@@ -1,10 +1,13 @@
 {
-  "name": "playwrite",
+  "name": "playwrite-screenshot",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:kmdhrk/playwrite.git",
-  "author": "kmdhrk <kameda1113@gmail.com>",
+  "author": "hiroki kameda",
   "license": "MIT",
+  "scripts": {
+    "screenshot": "node index.js"
+  },
   "dependencies": {
     "playwright": "^1.21.1"
   }

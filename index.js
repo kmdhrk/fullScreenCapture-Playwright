@@ -9,7 +9,7 @@ if (require.main === module) {
 
 async function main() {
   try {
-    const browser = await chromium.launch({ headless: false, devtools: true });
+    const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
     try {
@@ -21,8 +21,6 @@ async function main() {
       });
 
       for (const [url, filename] of urls) {
-        const dirname = path.join(__dirname, "img");
-
         if (settings.auth.user || settings.auth.pass) {
           await page.setExtraHTTPHeaders({
             Authorization: `Basic ${new Buffer.from(
@@ -33,44 +31,57 @@ async function main() {
 
         await page.goto(url, { waitUntil: "load", timeout: 30000 });
 
-        for (setviewport in settings.width) {
+        for (const setViewWidth of settings.width) {
+          // ビューポートセット
+          const setViewHeight = 720;
           await page.setViewportSize({
-            width: settings.width[setviewport],
-            height: 768,
+            width: setViewWidth,
+            height: setViewHeight,
             deviceScaleFactor: 2,
           });
-          const bodyElement = await page.$("body");
-          const pageHeight = await bodyElement.evaluate(
-            (node) => node.getBoundingClientRect().height
-          );
 
-          for (
-            let scrollHeight = 0;
-            scrollHeight < pageHeight;
-            scrollHeight += 768
-          ) {
-            await page.waitForTimeout(500);
+          const isMinViewWidth = Math.min(...settings.width) === setViewWidth;
+          if (isMinViewWidth) {
+            // ページの高さを取得
+            const bodyElement = await page.$("body");
+            const pageHeight = await bodyElement.evaluate(
+              (node) => node.getBoundingClientRect().height
+            );
+
+            // 下までスクロール
+            for (
+              let scrollHeight = 0;
+              scrollHeight < pageHeight;
+              scrollHeight += setViewHeight
+            ) {
+              await page.waitForTimeout(500);
+              await page.evaluate(() => {
+                window.scrollBy(0, 768);
+              });
+            }
             await page.evaluate(() => {
-              window.scrollBy(0, 768);
+              window.scroll(0, 0), 200;
             });
           }
-          await page.evaluate(() => {
-            window.scroll(0, 0), 200;
-          });
+
+          // 保存設定
+          const dirname = path.join(__dirname, "img");
           const destination = path.join(
             dirname,
-            filename + "_" + settings.width[setviewport] + ".png"
+            filename + "_" + setViewWidth + ".png"
           );
 
           await fsPromises.mkdir(path.dirname(destination), {
             recursive: true,
           });
+
+          // スクリーンショット
           await page.screenshot({ path: destination, fullPage: true });
-          console.log("Finished!!");
+          console.log(`Captured ${filename}_${setViewWidth}`);
         }
       }
     } finally {
-       await browser.close();
+      await browser.close();
     }
   } catch (err) {
     console.error(err);
