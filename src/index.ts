@@ -65,12 +65,13 @@ async function main() {
           }
 
           // 保存設定
-          const dirname = path.join(__dirname, "img");
+          const dirname = path.join(__dirname.replace('dist', 'img'));
+          console.log(dirname);
           const destination = path.join(
             dirname,
-            filename + "_" + setViewWidth + ".png"
+            filename.replace("/", "_") + "_" + setViewWidth + ".png"
           );
-
+          console.log(destination);
           await fs.mkdir(path.dirname(destination), {
             recursive: true,
           });

@@ -6,7 +6,7 @@
       "es2020",
       "DOM"
     ],
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -25,5 +25,5 @@
     "dist",
     "node_modules"
   ],
-  "compileOnSave": false
+  "compileOnSave": true
 }

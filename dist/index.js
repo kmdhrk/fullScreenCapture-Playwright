@@ -53,8 +53,10 @@ async function main() {
                         });
                     }
                     // 保存設定
-                    const dirname = path_1.default.join(__dirname, "img");
-                    const destination = path_1.default.join(dirname, filename + "_" + setViewWidth + ".png");
+                    const dirname = path_1.default.join(__dirname.replace('dist', 'img'));
+                    console.log(dirname);
+                    const destination = path_1.default.join(dirname, filename.replace("/", "_") + "_" + setViewWidth + ".png");
+                    console.log(destination);
                     await fs_1.promises.mkdir(path_1.default.dirname(destination), {
                         recursive: true,
                     });

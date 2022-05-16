@@ -6,7 +6,8 @@
   "author": "hiroki kameda",
   "license": "MIT",
   "scripts": {
-    "capture": "node dist/index.js"
+    "capture": "rm -r -f img ; node dist/index.js",
+    "build": "npx tsc"
   },
   "dependencies": {
     "playwright": "^1.21.1"
