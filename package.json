@@ -6,9 +6,14 @@
   "author": "hiroki kameda",
   "license": "MIT",
   "scripts": {
-    "screenshot": "node index.js"
+    "capture": "node dist/index.js"
   },
   "dependencies": {
     "playwright": "^1.21.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
   }
 }

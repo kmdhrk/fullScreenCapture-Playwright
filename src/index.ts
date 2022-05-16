@@ -1,7 +1,8 @@
-const { chromium } = require("playwright");
-const path = require("path");
-const fsPromises = require("fs/promises");
-const settings = require("./setting.js");
+import { chromium } from "playwright";
+import path from "path";
+import { domain, subDir, viewportWidth, authInfo } from "./setting";
+import { promises as fs } from "fs";
+
 
 if (require.main === module) {
   main();
@@ -13,39 +14,38 @@ async function main() {
     const context = await browser.newContext();
     const page = await context.newPage();
     try {
-      const urls = settings.subDir.map((dirName) => {
+      const urls = subDir.map((dirName: string) => {
         return [
-          settings.domain + (dirName && "/" + dirName),
+          domain + (dirName && "/" + dirName),
           dirName || "index",
         ];
       });
 
       for (const [url, filename] of urls) {
-        if (settings.auth.user || settings.auth.pass) {
+        if (authInfo.user || authInfo.pass) {
           await page.setExtraHTTPHeaders({
-            Authorization: `Basic ${new Buffer.from(
-              `${settings.auth.user}:${settings.auth.pass}`
+            Authorization: `Basic ${Buffer.from(
+              `${authInfo.user}:${authInfo.pass}`
             ).toString("base64")}`,
           });
         }
 
         await page.goto(url, { waitUntil: "load", timeout: 30000 });
 
-        for (const setViewWidth of settings.width) {
+        for (const setViewWidth of viewportWidth) {
           // ビューポートセット
-          const setViewHeight = 720;
+          const setViewHeight: number = 720;
           await page.setViewportSize({
             width: setViewWidth,
             height: setViewHeight,
-            deviceScaleFactor: 2,
           });
 
-          const isMinViewWidth = Math.min(...settings.width) === setViewWidth;
+          const isMinViewWidth = Math.min(...viewportWidth) === setViewWidth;
           if (isMinViewWidth) {
             // ページの高さを取得
-            const bodyElement = await page.$("body");
+            const bodyElement = await page.locator('body');
             const pageHeight = await bodyElement.evaluate(
-              (node) => node.getBoundingClientRect().height
+              (node: HTMLElement) => node.getBoundingClientRect().height
             );
 
             // 下までスクロール
@@ -71,7 +71,7 @@ async function main() {
             filename + "_" + setViewWidth + ".png"
           );
 
-          await fsPromises.mkdir(path.dirname(destination), {
+          await fs.mkdir(path.dirname(destination), {
             recursive: true,
           });
 
