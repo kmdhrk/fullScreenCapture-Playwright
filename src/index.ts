@@ -56,7 +56,7 @@ async function main() {
             ) {
               await page.waitForTimeout(500);
               await page.evaluate(() => {
-                window.scrollBy(0, 768);
+                window.scrollBy(0, setViewHeight);
               });
             }
             await page.evaluate(() => {
