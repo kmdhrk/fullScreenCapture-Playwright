@@ -74,4 +74,3 @@ async function main() {
         console.error(err);
     }
 }
-//# sourceMappingURL=index.js.map
