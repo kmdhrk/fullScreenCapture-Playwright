@@ -1,4 +1,4 @@
-# playwrite capture
+# Full Screen Capture Playwright
 
 ## 環境構築
 1. リポジトリをクローン
