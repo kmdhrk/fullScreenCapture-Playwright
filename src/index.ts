@@ -14,6 +14,7 @@ async function main() {
     const context = await browser.newContext();
     const page = await context.newPage();
     try {
+      // サイトごとにループ
       for (const site of sitesData) {
         const urls = site.subDir.map((dirName: string) => {
           return [
@@ -22,7 +23,10 @@ async function main() {
           ];
         });
 
+        // ページごとにループ
         for (const [url, filename] of urls) {
+          
+          // Basic認証対策
           if (site.authInfo?.user || site.authInfo?.pass) {
             await page.setExtraHTTPHeaders({
               Authorization: `Basic ${Buffer.from(
@@ -31,16 +35,18 @@ async function main() {
             });
           }
 
+          // ページへアクセス
           await page.goto(url, { waitUntil: "load", timeout: 30000 });
 
+          // 画面幅ごとにループ
           for (const setViewWidth of site.viewportWidth) {
-            // ビューポートセット
             const setViewHeight: number = 720;
             await page.setViewportSize({
               width: setViewWidth,
               height: setViewHeight,
             });
 
+            // 画面最小幅のとき一度下までスクロール
             const isMinViewWidth = Math.min(...site.viewportWidth) === setViewWidth;
             if (isMinViewWidth) {
               // ページの高さを取得
@@ -67,7 +73,7 @@ async function main() {
 
             // 保存設定
             const dirname = path.join(__dirname.replace('dist', 'img') + "/" + site.domain.replace(/(https|http):\/\//g, "").replace(/\//g, "_"));
-            const imgName = filename.replace("/", "_") + "_" + setViewWidth + ".png"
+            const imgName = filename.replace(/\//g, "_") + "_" + setViewWidth + ".png"
             const destination = path.join(
               dirname, imgName
             );
