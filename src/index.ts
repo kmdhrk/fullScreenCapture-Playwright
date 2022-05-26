@@ -10,8 +10,9 @@ if (require.main === module) {
 
 async function main() {
   try {
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({ headless: false, args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--disable-web-security', '--disable-features=IsolateOrigins', '--disable-site-isolation-trials', '--disable-features=BlockInsecurePrivateNetworkRequests',], devtools: true });
     const context = await browser.newContext();
+
     const page = await context.newPage();
     try {
       // サイトごとにループ
@@ -25,7 +26,7 @@ async function main() {
 
         // ページごとにループ
         for (const [url, filename] of urls) {
-          
+
           // Basic認証対策
           if (site.authInfo?.user || site.authInfo?.pass) {
             await page.setExtraHTTPHeaders({
@@ -34,7 +35,6 @@ async function main() {
               ).toString("base64")}`,
             });
           }
-
           // ページへアクセス
           await page.goto(url, { waitUntil: "load", timeout: 30000 });
 
