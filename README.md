@@ -8,7 +8,7 @@
 `npm install` or `yarn install`
 
 ## 使い方
-1. src/setting.tsにて設定
+1. src/setting.jsonで設定
 
 | 項目 | 使い方 | 型 |
 | --- | --- | --- |
