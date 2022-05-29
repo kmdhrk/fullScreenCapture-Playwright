@@ -10,7 +10,7 @@ if (require.main === module) {
 
 async function main() {
   try {
-    const browser = await chromium.launch({ headless: false, args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox', '--disable-web-security', '--disable-features=IsolateOrigins', '--disable-site-isolation-trials', '--disable-features=BlockInsecurePrivateNetworkRequests',], devtools: true });
+    const browser = await chromium.launch({ headless: true, args: [  '--disable-web-security'] });
     const context = await browser.newContext();
 
     const page = await context.newPage();
